@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chilltify</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <h2 class="logo">🎧 Chilltify</h2>
+      <ul class="menu">
+        <li data-seccion="inicio" class="activo">🏠 Inicio</li>
+        <li data-seccion="biblioteca">🎵 Biblioteca</li>
+        <li data-seccion="favoritos">❤️ Favoritos</li>
+        <li data-seccion="buscar">🔍 Buscar</li>
+        <li data-seccion="queue">📋 Cola</li>
+        <li data-seccion="historial">⏱️ Historial</li>
+      </ul>
+      
+      <div class="playlists">
+        <div class="playlists-header">
+          <h3>Tus playlists</h3>
+          <button class="create-playlist-btn" title="Crear playlist">➕</button>
+        </div>
+        <ul class="playlist-drop-zone"></ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="search-bar-global">
+        <input type="text" id="global-search-input" placeholder="Buscar canciones, artistas..." autocomplete="off" />
+        <button id="global-search-btn"><i class="fas fa-search"></i></button>
+        <div id="global-search-results" class="search-results-dropdown"></div>
+      </div>
+
+      <div class="header">
+        <!-- <input type="text" placeholder="Buscar canciones, artistas..." /> -->
+        <div class="profile">Usuario</div>
+      </div>
+
+      <section id="inicio" class="seccion activa">
+        <h1>Inicio</h1>
+        <div class="card-grid"></div>
+      </section>
+
+      <section id="biblioteca" class="seccion">
+        <h1>Tu Biblioteca</h1>
+        <div class="library-tabs">
+          <button class="tab-btn active" data-tab="playlists">Playlists</button>
+          <button class="tab-btn" data-tab="albums">Álbumes</button>
+          <button class="tab-btn" data-tab="artists">Artistas</button>
+        </div>
+        <div class="tab-content">
+          <div id="playlists-tab" class="tab-pane active"></div>
+          <div id="albums-tab" class="tab-pane"></div>
+          <div id="artists-tab" class="tab-pane"></div>
+        </div>
+      </section>
+
+      <section id="favoritos" class="seccion">
+        <h1>Favoritos</h1>
+        <div class="favorites-grid"></div>
+      </section>
+
+      <section id="buscar" class="seccion">
+        <h1>Buscar</h1>
+        <div class="search-results">
+          <div class="search-tabs">
+            <button class="tab-btn active" data-tab="songs">Canciones</button>
+            <button class="tab-btn" data-tab="albums">Álbumes</button>
+            <button class="tab-btn" data-tab="artists">Artistas</button>
+          </div>
+          <div class="tab-content">
+            <div id="songs-tab" class="tab-pane active"></div>
+            <div id="albums-tab" class="tab-pane"></div>
+            <div id="artists-tab" class="tab-pane"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="queue" class="seccion">
+        <h1>Cola de Reproducción</h1>
+        <div class="queue-container">
+          <div class="now-playing">
+            <h3>Reproduciendo Ahora</h3>
+            <div class="current-track"></div>
+          </div>
+          <div class="queue-list">
+            <h3>Siguientes</h3>
+            <div class="queue-tracks"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="historial" class="seccion">
+        <h1>Historial de Reproducción</h1>
+        <div class="history-header">
+          <button class="clear-history-btn">Limpiar Historial</button>
+        </div>
+        <div class="history-list"></div>
+      </section>
+
+      <section id="playlist-view" class="seccion" style="display:none;">
+        <button onclick="irAInicio()" style="margin-bottom:1rem;background:#222;color:#fff;border:none;padding:0.5rem 1.5rem;border-radius:8px;cursor:pointer;font-size:1rem;">← Volver a inicio</button>
+        <!-- Aquí se renderiza la vista de la playlist seleccionada -->
+      </section>
+    </main>
+
+    <!-- Player -->
+    <footer class="player">
+      <div class="player-left now-playing-info">
+        <img class="now-playing-cover" src="" alt="" />
+        <div class="song-info">
+          <div class="song-title"></div>
+          <div class="song-artist"></div>
+        </div>
+        <button class="favorite-btn" aria-label="Marcar como favorito">
+          <i class="far fa-heart"></i>
+        </button>
+      </div>
+      
+      <div class="player-center">
+        <div class="controls">
+          <button class="control-btn shuffle-btn" title="Reproducción aleatoria">
+            <i class="fas fa-random"></i>
+          </button>
+          <button class="control-btn prev-btn" title="Anterior">
+            <i class="fas fa-step-backward"></i>
+          </button>
+          <button class="control-btn play-btn" title="Reproducir/Pausar">
+            <i class="fas fa-play"></i>
+          </button>
+          <button class="control-btn next-btn" title="Siguiente">
+            <i class="fas fa-step-forward"></i>
+          </button>
+          <button class="control-btn repeat-btn" title="Repetir">
+            <i class="fas fa-redo"></i>
+          </button>
+        </div>
+        <div class="progress-container">
+          <span class="current-time">0:00</span>
+          <input type="range" class="progress-bar" min="0" value="0">
+          <span class="duration">0:00</span>
+        </div>
+      </div>
+      
+      <div class="player-right">
+        <button class="control-btn queue-btn" title="Mostrar cola">
+          <i class="fas fa-list"></i>
+        </button>
+        <button class="control-btn karaoke-btn" title="Modo karaoke">
+          <i class="fas fa-microphone"></i>
+        </button>
+        <button class="control-btn miniplayer-btn" title="Miniplayer">
+          <i class="fas fa-chevron-up"></i>
+        </button>
+        <div class="volume-control">
+          <button class="control-btn volume-icon" title="Silenciar">
+            <i class="fas fa-volume-up"></i>
+          </button>
+          <input type="range" class="volume-bar" min="0" max="1" step="0.01" value="1" />
+        </div>
+      </div>
+    </footer>
+
+    <!-- Audio element -->
+    <audio id="audio-player" preload="metadata"></audio>
+
+    <!-- Miniplayer -->
+    <div class="miniplayer hidden">
+      <div class="miniplayer-info">
+        <img class="miniplayer-cover" src="" alt="" />
+        <div class="miniplayer-text">
+          <div class="miniplayer-title"></div>
+          <div class="miniplayer-artist"></div>
+        </div>
+      </div>
+      <div class="miniplayer-controls">
+        <button class="miniplayer-prev"><i class="fas fa-step-backward"></i></button>
+        <button class="miniplayer-play"><i class="fas fa-play"></i></button>
+        <button class="miniplayer-next"><i class="fas fa-step-forward"></i></button>
+      </div>
+    </div>
+
+    <!-- Karaoke Modal -->
+    <div class="karaoke-modal hidden">
+      <div class="karaoke-content">
+        <div class="karaoke-header">
+          <h2>Modo Karaoke</h2>
+          <button class="karaoke-close">×</button>
+        </div>
+        <div class="karaoke-body">
+          <div class="karaoke-lyrics"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para crear playlist -->
+    <div id="modal-crear-playlist" class="modal">
+      <div class="modal-content">
+        <h2>Crear nueva playlist</h2>
+        <form id="form-crear-playlist">
+          <label>Nombre de la playlist</label>
+          <input type="text" id="nombre-playlist" required maxlength="40" />
+          <label>Portada (URL de imagen)</label>
+          <input type="url" id="portada-playlist" placeholder="https://..." />
+          <div style="margin-top:1rem;display:flex;gap:1rem;justify-content:flex-end;">
+            <button type="button" id="cancelar-crear-playlist">Cancelar</button>
+            <button type="submit">Crear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
